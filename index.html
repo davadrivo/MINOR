@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MINOR — Кофейня</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== Анимации появления при прокрутке ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* ======= Общие стили ======= */
+    
+    /* ===== Карточка напитка (без изменений) ===== */
+    .menu-card {
+      position: relative;
+      width: 230px;
+      height: 310px;
+      margin: 40px auto;
+      perspective: 800px;
+      cursor: pointer;    
+      overflow: visible;
+
+      --info-left: 60px;
+      --info-bottom: 0px;
+      --info-width: 140px;
+      --text-top: -5px;
+      --text-left: -5px;
+      --text-align: right;
+
+      /* Настройки положения напитка */
+      --drink-top: -4px;
+      --drink-left: -150px;
+      --drink-rotate: -4deg;
+      --drink-size: 350px;
+    }
+
+    .drink-image {
+      position: absolute;
+      top: var(--drink-top);
+      left: var(--drink-left);
+      transform: translateY(20px) scale(0.94);
+      transition: transform 0.5s ease;
+      z-index: 3;
+    }
+
+    .drink-image img {
+      width: var(--drink-size);
+      height: auto;
+      transition: transform 0.4s ease;
+    }
+
+    .drink-info {
+      position: absolute;
+      bottom: var(--info-bottom, 0px);
+      left: var(--info-left, 0px);
+      width: var(--info-width, 230px);
+      
+      background: #fdf3e7; /* бежевый фон */
+      color: #3b2c22; /* коричневый текст */
+      
+      padding: 20px 28px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+      
+      border-radius: 0 25px 0 25px; 
+
+      transition: all 0.4s ease;
+      z-index: 2;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .drink-info h3 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 600;
+      text-align: right;
+      color: #b4845c;
+    }
+
+.drink-info p {
+  margin: 6px 0 0;
+  font-size: 0.95em;
+  color: #3b2c22 !important; /* жёсткое перекрытие белого */
+  font-weight: 500;
+  text-align: right;
+}
+
+    /* Эффект при наведении */
+    .menu-card:hover .drink-info {
+      transform: translateY(-20px);
+      box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+    }
+
+    .menu-card:hover .drink-image {
+      transform: translateY(-25px) scale(1) rotate(var(--drink-rotate));
+    }
+    
+    html {
+        scroll-behavior: smooth;
+    }
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #fdf3e7; /* бежевый фон */
+  color: #3b2c22; /* коричневый текст */
+  scroll-behavior: smooth; 
+}
+
+    /* ======================================================= */
+    /* ✅ СТАНДАРТИЗИРОВАННЫЕ СТИЛИ ДЛЯ ВСЕХ СЕКЦИЙ (1200px) */
+    /* ======================================================= */
+section {
+  max-width: 1200px;
+  padding: 80px 60px;
+  margin: 60px auto;
+  background-color: #fdf3e7; /* бежевый */
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  position: relative;
+  color: #3b2c22; /* коричневый текст */
+}
+
+section:not(.hero) {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+@media (max-width: 700px) {
+  section:not(.hero) {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+    
+    /* Удалены специфические стили для #about, которые делали его прозрачным */
+
+    .hero {
+        margin-top: 0; 
+        margin-bottom: 0;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+        max-width: none;
+    }
+    
+    h2 {
+      text-align: center;
+      font-family: 'Playfair Display', serif; 
+      font-weight: 300;
+      font-size: 44px;
+      color: #2c1e13;
+      margin-top: 0;
+      margin-bottom: 40px;
+    }
+
+    p {
+      text-align: center;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 10px auto;
+    }
+
+    /* ======= Навигация: Стили "Островок-шапка" ======= */
+    header {
+      position: fixed;
+      top: 20px; 
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 1400px; 
+      width: calc(100% - 40px);
+      
+      background: rgba(44, 30, 19, 0.6); 
+      backdrop-filter: blur(12px); 
+      
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4); 
+      z-index: 10;
+      
+      border-radius: 30px; 
+      border-bottom: none; 
+    }
+    
+    .header-content {
+        display: flex;
+        justify-content: space-between; 
+        align-items: center;
+        width: 100%;
+        padding: 0 30px; 
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif; 
+      font-size: 22px; 
+      letter-spacing: 1.5px;
+      font-weight: 300; 
+      color: #fff; 
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #fff; 
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #b4845c;
+    }
+
+    /* ======= Главный экран (HERO) ======= */
+    .hero {
+      min-height: 100vh;
+      width: 100%; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: url('https://github.com/davadrivo/MIT-studio/blob/main/%D1%84%D0%BE%D0%BD1%D0%B1%D0%BB%D0%BE%D0%BA%D0%B0.png?raw=true') center/cover no-repeat;
+      background-color: #2c1e13;
+      color: #fff;
+      position: relative;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      overflow: hidden; 
+      padding-bottom: 80px; 
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1; 
+        transform: translateY(-40px); 
+    }
+    
+    .hero-footer-text {
+        position: absolute;
+        bottom: 80px; 
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 900px;
+        color: rgba(255, 255, 255, 0.65); 
+        font-size: 14px;
+        line-height: 1.4;
+        text-shadow: none; 
+    }
+    
+    .hero h1 {
+      font-family: 'Playfair Display', serif; 
+      font-size: 100px; 
+      letter-spacing: 4px;
+      font-weight: 300; 
+      margin-bottom: 5px; 
+    }
+    
+    .hero .subtitle {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.65); 
+        letter-spacing: 0.18em; 
+        margin-top: 0;
+        margin-bottom: 30px;
+        text-shadow: none; 
+    }
+
+    .hero a {
+      display: inline-block;
+      background: #b4845c;
+      color: #fff;
+      padding: 14px 34px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero a:hover {
+      background: #966c4b;
+      transform: translateY(-5px); 
+      box-shadow: 0 10px 20px rgba(59, 44, 34, 0.5); 
+    }
+    
+    /* ======= Блок "О нас" (Контент) ======= */
+    .about-images {
+        display: flex;
+        justify-content: space-between; 
+        margin-top: 40px;
+        padding: 0;
+    }
+    
+    .about-images img {
+        height: auto;
+        object-fit: cover;
+        width: calc(50% - 10px); /* Адаптируем ширину под новый max-width */
+        border-top-right-radius: 60px; 
+        border-bottom-left-radius: 60px; 
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    }
+    
+    .about-images img:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(59, 44, 34, 0.5); 
+    }
+    
+    .about-images img:first-child {
+        margin-right: 20px; 
+    }
+    
+    /* Специфические стили для скругления меню */
+    #menu {
+        border-top-right-radius: 60px;
+        border-bottom-left-radius: 60px;
+        /* max-width и padding наследуются от 'section' */
+    }
+    
+    /* ✅ ИСПРАВЛЕНИЕ: Смена закругления для БОЛЬШОГО БЛОКА ОТЗЫВОВ */
+    #reviews {
+        border-radius: 0 60px 0 60px; /* TR и BL закруглены */
+        /* max-width и padding наследуются от 'section' */
+    }
+
+    /* ---------------------------------------------------- */
+    /* Стили для блока "ТЕМНАЯ ПЛАШКА" (ИНТЕРЬЕР, КОНТАКТЫ, МЕНЮ, ОТЗЫВЫ) */
+    /* ---------------------------------------------------- */
+    .dark-plaque {
+        background-color: #3b2c22;
+        color: #fff;
+        border-top-right-radius: 60px; 
+        border-bottom-left-radius: 60px; 
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+        padding: 80px 60px; /* Совпадает с section */
+        margin: 60px auto;
+        position: relative;
+    }
+    
+    .dark-plaque h2, .dark-plaque p {
+        color: #fff;
+    }
+    
+    .dark-plaque p {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* ======= Галерея, Отзывы, Контакты ======= */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .gallery img {
+      width: 100%;
+      border-top-right-radius: 40px; 
+      border-bottom-left-radius: 40px; 
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
+      object-fit: cover;
+      height: 250px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4); 
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    }
+    
+    .gallery img:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8); 
+        cursor: pointer;
+    }
+
+    /* Сетка меню */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px 40px;
+      justify-items: center;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 1000px) {
+      .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Стили для блока МЕНЮ и его анимации ===== */
+    
+    #menu h2 {
+     font-size: 3.0rem;
+     margin-bottom: -120px; 
+     }
+
+    /* Стили для скрытия/открытия меню */
+    
+    .menu-content-wrapper {
+      max-height: 480px; 
+      overflow: hidden; 
+      transition: max-height 0.8s ease-in-out; 
+    }
+
+    .menu-content-wrapper.is-open {
+      max-height: 4000px; 
+    }
+    
+    .menu-toggle-container {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 10px;
+    }
+
+    .menu-toggle-button {
+        background: #b4845c;
+        color: #fff;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-toggle-button:hover {
+        background: #966c4b;
+        transform: translateY(-2px);
+    }
+    
+
+
+    /* ---------------------------------------------------- */
+    /* Стили для БЕГУЩЕЙ СТРОКИ ОТЗЫВОВ */
+    /* ---------------------------------------------------- */
+    
+    .marquee-container {
+        overflow: hidden;
+        white-space: nowrap; 
+        padding: 30px 0;
+        max-width: 100%;
+        position: relative;
+    }
+
+    .marquee-track {
+        display: flex;
+        animation: marquee-scroll 90s linear infinite; 
+        width: fit-content; 
+        padding-right: 20px; 
+    }
+
+    .review-card {
+        /* Карточки остаются светлыми для контраста с темным фоном секции */
+        background-color: #fdf3e7; /* бежевый фон */
+        color: #2c1e13;
+        padding: 25px;
+        margin: 0 15px; 
+        width: 300px; 
+        min-width: 300px;
+        height: 180px; 
+        border-top-right-radius: 45px;
+        border-bottom-left-radius: 45px;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: left;
+        flex-shrink: 0; 
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .review-card p.text {
+        font-style: italic;
+        color: #5a4b3f; 
+        margin: 0 0 15px 0;
+        text-align: left;
+        line-height: 1.5;
+        white-space: normal; 
+        overflow: hidden; 
+    }
+
+    .review-card p.author {
+        font-weight: 600;
+        color: #b4845c; 
+        margin: 0;
+        text-align: right;
+        font-style: normal;
+        font-size: 0.95em;
+    }
+
+    /* Пауза анимации при наведении на трек */
+    .marquee-track:hover {
+        animation-play-state: paused;
+    }
+
+    /* Keyframes для горизонтального скролла */
+    @keyframes marquee-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); } 
+    }
+    /* ---------------------------------------------------- */
+    
+    /* ---------------------------------------------------- */
+    /* Стили для кнопок контактов (без иконок) */
+    /* ---------------------------------------------------- */
+    .contact-links-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 40px;
+    }
+
+    .social-link-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fdf3e7; /* бежевый фон */
+        color: #2c1e13; 
+        padding: 12px 30px; 
+        margin: 10px 0; 
+        width: 250px; 
+        border-radius: 12px; 
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px; 
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .social-link-button:hover {
+        background: #b4845c; 
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+
+    /* Медиазапросы для мобильных устройств */
+    @media (max-width: 960px) {
+        /* ✅ Адаптация всех секций для мобильных устройств */
+        section { 
+            padding: 50px 20px; /* Уменьшаем отступ для мобильных */
+            max-width: 100%;
+        }
+        
+        /* Адаптация внутренних блоков #about */
+        .about-images {
+            max-width: 100%; /* Полная ширина контейнера */
+            padding: 0 20px; /* Учитываем отступы */
+        }
+        
+        .dark-plaque {
+            border-top-right-radius: 40px;
+            border-bottom-left-radius: 40px;
+            padding: 40px 30px; 
+            max-width: calc(100% - 60px); 
+        }
+        
+        .about-images {
+            flex-direction: column; 
+            gap: 20px;
+            padding: 0 20px; 
+            max-width: calc(100% - 40px);
+        }
+        
+        .about-images img {
+            width: 100%;
+            border-top-right-radius: 40px;
+            border-bottom-left-radius: 40px;
+            height: 250px; 
+            margin-right: 0 !important;
+        }
+        
+        header {
+            max-width: 95%; 
+            width: 95%; 
+            padding: 8px 0;
+            border-radius: 20px; 
+            top: 15px; 
+        }
+        .header-content {
+            padding: 0 20px;
+        }
+
+        .social-link-button {
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .hero h1 { font-size: 80px; }
+        .hero .subtitle { font-size: 14px; }
+        .hero-footer-text { width: 90%; font-size: 12px; bottom: 40px; }
+        .header-content { padding: 0 20px; }
+        h2 { font-size: 36px; }
+        
+        .gallery img { 
+            border-top-right-radius: 30px; 
+            border-bottom-left-radius: 30px; 
+        }
+        
+        /* Адаптация карточек отзывов */
+        .review-card {
+            width: 250px; 
+            min-width: 250px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        nav { display: none; }
+        .hero h1 { font-size: 50px; }
+    }
+
+    /* Футер */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 14px;
+    color: #fdfaf6;
+    background-color: #3b2c22;
+    margin-top: 60px;
+}
+
+    /* Удаление универсального класса .soft-rounded (если был ранее добавлен) */
+    /* .soft-rounded { ... } - удалено */
+
+    /* ====== АДАПТАЦИЯ МЕНЮ И ОБЩЕГО МАКЕТА ====== */
+    @media (max-width: 900px) {
+      .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px 20px;
+      }
+
+      .menu-card {
+        --drink-left: -80px;
+        --drink-size: 280px;
+        --info-left: 40px;
+        --info-width: 160px;
+      }
+
+      .menu-card .drink-info {
+        padding: 16px 22px;
+      }
+
+      #menu h2 {
+        font-size: 2.4rem;
+        margin-bottom: -80px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body, html {
+        overflow-x: hidden;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 40px;
+      }
+
+      .menu-card {
+        width: 90%;
+        max-width: 320px;
+        height: auto;
+        perspective: none;
+        --drink-top: 0px;
+        --drink-left: 0px;
+        --drink-size: 240px;
+        --info-left: 0px;
+        --info-width: 100%;
+      }
+
+      .menu-card .drink-image {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+
+      .menu-card .drink-image img {
+        width: var(--drink-size);
+        transform: none;
+      }
+
+      .menu-card .drink-info {
+        position: relative;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        align-items: center;
+        text-align: center;
+        border-radius: 30px;
+        padding: 18px 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+
+      .menu-card .drink-info h3,
+      .menu-card .drink-info p {
+        text-align: center;
+      }
+
+      #menu h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Исправление для галереи на мобильных и планшетах */
+    @media (max-width: 900px) {
+      .gallery {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .gallery img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+
+      .gallery img:last-child {
+        width: 100% !important;
+        height: auto !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-card .drink-info {
+        padding: 14px 20px;
+      }
+
+      .menu-card .drink-info h3 {
+        font-size: 1.1em;
+      }
+
+      .menu-card .drink-info p {
+        font-size: 0.9em;
+      }
+
+      .menu-grid {
+        gap: 35px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      section {
+        max-width: 1400px;
+        padding: 100px 80px;
+      }
+
+      .menu-grid {
+        gap: 60px 50px;
+      }
+
+      #menu h2 {
+        font-size: 3.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+        <h1>MINOR</h1>
+        <nav>
+          <a href="#about">О нас</a>
+          <a href="#menu">Меню</a>
+          <a href="#gallery">Интерьер</a>
+          <a href="#reviews">Отзывы</a>
+          <a href="#contact">Контакты</a>
+        </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+        <h1>MINOR</h1>
+        <div class="subtitle">Сеть ресторанов и кафе</div>
+        <a href="#menu">Посмотреть меню</a>
+    </div>
+    <p class="hero-footer-text">
+        Добро пожаловать в Minor — место, где каждый глоток кофе становится особенным моментом. Мы создали уютное пространство для тех, кто ценит настоящее качество и неспешные беседы. У нас вы найдёте широкий выбор авторских напитков и свежей выпечки, приготовленной с любовью. Minor — это не просто кофейня, это ваш личный уголок для отдыха, творчества и встреч с друзьями. Загляните к нам и почувствуйте атмосферу, которая согревает душу.
+    </p>
+  </section>
+
+  <!-- Секция О нас: Сделана темной плашкой целиком -->
+  <section id="about" class="dark-plaque reveal">
+    <h2>О нас</h2>
+    <!-- Контент из .about-plaque перенесен сюда -->
+    <p>
+        Minor — это не просто кофейня, это ваш личный уголок для отдыха, творчества и встреч с друзьями. 
+        Мы подаем авторские напитки, приготовленные с любовью, и свежую выпечку, которая согревает душу.
+    </p>
+    
+    <div class="about-images">
+        <img src="https://github.com/davadrivo/MIT-studio/blob/main/Gemini_Generated_Image_5165ej5165ej5165.png?raw=true" 
+             alt="Вид на фасад кофейни MINOR">
+        <img src="https://github.com/davadrivo/MIT-studio/blob/main/Gemini_Generated_Image_loj2j2loj2j2loj2.png?raw=true" 
+             alt="Интерьер кофейни с барной стойкой и выпечкой">
+    </div>
+  </section>
+
+  <!-- Секция Меню: Сделана темной плашкой -->
+  <section id="menu" class="dark-plaque reveal">
+    <h2>Меню</h2>
+    
+    <div class="menu-content-wrapper" id="menuWrapper"> 
+      <div class="menu-grid">
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%B5%D1%81%D0%BF%D1%80%D0%B5%D1%81%D1%81%D0%BE.png" alt="Эспрессо">
+          </div>
+          <div class="drink-info">
+            <h3>Эспрессо</h3>
+            <p>30 мл — 800 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%B0%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B0%D0%BD%D0%BE.png" alt="Американо">
+          </div>
+          <div class="drink-info">
+            <h3>Американо</h3>
+            <p>250 мл — 1200 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D1%84%D0%BB%D0%B5%D1%82%20%D1%83%D0%B0%D0%B8%CC%86%D1%82.png" alt="Флет Уайт">
+          </div>
+          <div class="drink-info">
+            <h3>Флэт уайт</h3>
+            <p>400 мл — 1400 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%BA%D0%B0%D0%BF%D1%83%D1%87%D0%B8%D0%BD%D0%BE.png" alt="Капучино">
+          </div>
+          <div class="drink-info">
+            <h3>Капучино</h3>
+            <p>450 мл — 1350 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%BB%D0%B0%D1%82%D1%82%D0%B5.png" alt="Латте">
+          </div>
+          <div class="drink-info">
+            <h3>Латте</h3>
+            <p>450 мл — 1350 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D1%80%D0%B0%D1%84.png" alt="Раф">
+          </div>
+          <div class="drink-info">
+            <h3>Раф</h3>
+            <p>450 мл — 1550 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%B3%D1%80%D0%B8%D0%BD%20%D0%BB%D0%B0%D1%82%D1%82%D0%B5.png" alt="Грин Матча Латте">
+          </div>
+          <div class="drink-info">
+            <h3>Грин матча латте</h3>
+            <p>450 мл — 1450 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://raw.githubusercontent.com/davadrivo/MIT-studio/ffe8b6ee1b3f3de1f206a44ba72640300a64c88d/%D0%B1%D0%BB%D1%8E%20%D0%BB%D0%B0%D1%82%D0%B5.png" alt="Блю Матча Латте">
+          </div>
+          <div class="drink-info">
+            <h3>Блю матча латте</h3>
+            <p>450 мл — 1450 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://github.com/davadrivo/MIT-studio/blob/main/erasebg-transformed%20(46).png?raw=true" alt="Айс латте">
+          </div>
+          <div class="drink-info">
+            <h3>Айс латте</h3>
+            <p>400 мл — 1200 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://github.com/davadrivo/MIT-studio/blob/main/erasebg-transformed%20(45).png?raw=true" alt="Грин матча">
+          </div>
+          <div class="drink-info">
+            <h3>Айс матча green</h3>
+            <p>400 мл — 1200 ₸</p>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="drink-image">
+            <img src="https://github.com/davadrivo/MIT-studio/blob/main/erasebg-transformed%20(44).png?raw=true" alt="Блю матча">
+          </div>
+          <div class="drink-info">
+            <h3>Айс матча <br>blue</h3>
+            <p>400 мл — 1200 ₸</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-toggle-container">
+        <button id="menuToggleButton" class="menu-toggle-button">Открыть меню</button>
+    </div>
+  </section>
+
+  <!-- Секция Интерьер: Темная плашка (была) -->
+  <section id="gallery" class="dark-plaque reveal">
+    <h2>Интерьер</h2>
+    <p>Атмосфера MINOR — это минимализм, дерево, свет и музыка. Мы верим, что кофе раскрывается в гармонии с пространством.</p>
+    <div class="gallery">
+      <img src="https://github.com/davadrivo/MIT-studio/blob/main/Gemini_Generated_Image_gwahc3gwahc3gwah%20(1)%202.png?raw=true" 
+           alt="Современный интерьер 1">
+      <img src="https://github.com/davadrivo/MIT-studio/blob/main/Gemini_Generated_Image_gwahc3gwahc3gwah%20(1)%203.png?raw=true" 
+           alt="Современный интерьер 2">
+      <img src="https://github.com/davadrivo/MIT-studio/blob/main/Gemini_Generated_Image_gwahc3gwahc3gwah%20(1)%205.png?raw=true" 
+           alt="Современный интерьер 3">
+    </div>
+  </section>
+
+  <!-- Секция Отзывы: Сделана темной плашкой -->
+  <section id="reviews" class="dark-plaque reveal">
+    <h2>Отзывы</h2>
+    <div class="marquee-container">
+        <div class="marquee-track" id="reviewsTrack">
+            <!-- Content populated by JavaScript -->
+        </div>
+    </div>
+  </section>
+
+  <!-- Секция Контакты: Темная плашка (была) -->
+  <section id="contact" class="contact dark-plaque reveal">
+    <h2>Контакты</h2>
+    <p>Свяжитесь с нами любым удобным способом — мы всегда рады ответить на ваши вопросы!</p>
+    <div class="contact-links-container">
+        <!-- WhatsApp Link -->
+        <a href="https://wa.me/77001234567" target="_blank" class="social-link-button">
+            WhatsApp
+        </a>
+
+        <!-- Telegram Link -->
+        <a href="https://t.me/minor_coffee_krg" target="_blank" class="social-link-button">
+            Telegram
+        </a>
+
+        <!-- Email Link -->
+        <a href="mailto:minor.coffee.krg@example.com" class="social-link-button">
+            Email
+        </a>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 MINOR. Все права защищены.
+  </footer>
+
+  <script>
+    // ✅ СКРИПТ ДЛЯ ОТКРЫТИЯ/ЗАКРЫТИЯ МЕНЮ
+    const menuWrapper = document.getElementById('menuWrapper');
+    const toggleButton = document.getElementById('menuToggleButton');
+
+    function toggleMenu() {
+        menuWrapper.classList.toggle('is-open');
+
+        if (menuWrapper.classList.contains('is-open')) {
+            toggleButton.textContent = 'Свернуть меню';
+            document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            toggleButton.textContent = 'Открыть меню';
+            document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    toggleButton.addEventListener('click', toggleMenu);
+    
+    // --------------------------------------------------------------------
+    // ✅ СКРИПТ ДЛЯ ДИНАМИЧЕСКОЙ ГЕНЕРАЦИИ ОТЗЫВОВ И ЗАПУСКА МАРКИЗА
+    // --------------------------------------------------------------------
+    
+    const reviewsData = [
+        { name: "Алина М.", text: "Очень спокойное место. Можно сесть у окна, включить музыку в наушниках и просто перевести дух. Кофе хороший, бариста внимательные." },
+        { name: "Дмитрий К.", text: "Зашёл случайно, а теперь хожу регулярно. Капучино стабильно вкусный, а атмосфера какая-то домашняя, не хочется уходить." },
+        { name: "Лера С.", text: "Люблю MINOR за то, что здесь не шумно. Даже когда людей много, всё равно чувствуешь уют." },
+        { name: "Игорь Р.", text: "Отличное место чтобы поработать за ноутом. Тихо, розетки есть, и кофе бодрит, а не просто тёплое молоко." },
+        { name: "Екатерина В.", text: "Самое приятное это персонал. Всегда здороваются, улыбаются, но без лишней навязчивости." },
+        { name: "Рустам Н.", text: "Латте просто топ, особенно если взять на овсяном. Не знаю как они добиваются такого вкуса." },
+        { name: "Марина П.", text: "Интерьер минималистичный, но с душой. Всё чисто, аккуратно, никаких лишних деталей. Люблю такое." },
+        { name: "Александр Ж.", text: "Классное место для утреннего кофе. Небольшое, но очень атмосферное." },
+        { name: "Кира Л.", text: "Был в первый раз, впечатление хорошее. Не пафосно, но со вкусом." },
+        { name: "Антон Д.", text: "Кофе вкусный, десерты свежие. Иногда беру с собой на работу, радует что делают быстро." },
+        { name: "Настя Е.", text: "Удивило что в MINOR не гонятся за трендами, а просто делают качественно. Это чувствуется." },
+        { name: "Сергей Т.", text: "Я не эксперт по кофе, но капучино здесь реально вкуснее чем во многих других местах." },
+        { name: "Полина Г.", text: "Иногда прихожу просто посидеть в тишине. Очень расслабляет." },
+        { name: "Влад А.", text: "Приятно что не громкая музыка. Можно поговорить спокойно, без крика." },
+        { name: "Егор М.", text: "Эспрессо крепкий, как и должен быть. Видно что обжарка не случайная." },
+        { name: "Алия Х.", text: "Место небольшое, но уютное. Именно то чего часто не хватает в городе." },
+        { name: "Максим С.", text: "Атмосфера напоминает маленькие европейские кофейни. Спокойно, чисто и по делу." },
+        { name: "Ирина К.", text: "Отличное соотношение цены и качества. И кофе, и десерты стоят своих денег." },
+        { name: "Надя Ф.", text: "Здесь всё просто: светлые стены, дерево, мягкий свет. И почему-то именно это создаёт уют." },
+        { name: "Виктор Б.", text: "Часто беру кофе навынос, приятно что стаканы удобные и не протекают. Мелочь, а важно." },
+        { name: "София П.", text: "Утром сюда тянет само собой. Уже стало привычкой начинать день с MINOR." },
+        { name: "Данил Ч.", text: "Это то самое место куда заходишь один, а выходишь в хорошем настроении. Без лишних слов." }
+    ];
+
+    const reviewsTrack = document.getElementById('reviewsTrack');
+
+    function populateReviewsMarquee() {
+        // Дублируем массив для создания эффекта бесконечного скролла
+        const fullReviews = [...reviewsData, ...reviewsData]; 
+        
+        fullReviews.forEach((review, index) => {
+            const card = document.createElement('div');
+            card.classList.add('review-card');
+            
+            const set = index < reviewsData.length ? 'original' : 'duplicate';
+            card.setAttribute('data-set', set); 
+
+            card.innerHTML = `
+                <p class="text">"${review.text}"</p>
+                <p class="author">— ${review.name}</p>
+            `;
+            reviewsTrack.appendChild(card);
+        });
+    }
+
+    // Запускаем заполнение при загрузке окна
+    window.addEventListener('load', populateReviewsMarquee);
+</script>
+
+  <script>
+    // Анимация появления блоков при скролле
+    const revealElements = document.querySelectorAll('.reveal');
+
+    function handleReveal() {
+      const triggerBottom = window.innerHeight * 0.85;
+
+      revealElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < triggerBottom) {
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleReveal);
+    window.addEventListener('load', handleReveal);
+  </script>
+</body>
+</html>
+
