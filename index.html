@@ -132,11 +132,11 @@ section {
   box-shadow: 0 8px 20px rgba(0,0,0,0.05);
   position: relative;
   color: #3b2c22; /* коричневый текст */
+  scroll-margin-top: 100px;
 }
 
 section:not(.hero) {
-  margin-left: 40px;
-  margin-right: 40px;
+  margin: 60px auto;
 }
 
 @media (max-width: 700px) {
@@ -357,6 +357,8 @@ section:not(.hero) {
         box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
         padding: 80px 60px; /* Совпадает с section */
         margin: 60px auto;
+        margin-left: auto;
+        margin-right: auto;
         position: relative;
     }
     
@@ -690,59 +692,144 @@ footer {
         overflow-x: hidden;
       }
 
+      /* Меню-грид: одна колонка, полная ширина, gap и центрирование */
       .menu-grid {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 30px;
+        margin-top: 30px;
+        overflow: visible;
       }
 
+      /* Карточка меню: ширина и плашки 100%, max-width 350px, нижний margin 50px */
       .menu-card {
-        width: 90%;
-        max-width: 320px;
-        height: auto;
-        perspective: none;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto 50px auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        /* Сброс переменных */
         --drink-top: 0px;
         --drink-left: 0px;
-        --drink-size: 240px;
+        --drink-size: 220px;
         --info-left: 0px;
         --info-width: 100%;
       }
 
+      /* Блок с напитком — по центру, без абсолютного позиционирования */
       .menu-card .drink-image {
-        position: relative;
-        top: 0;
+        position: static;
+        margin-top: 18px;
+        margin-bottom: 8px;
         left: 0;
-        transform: none;
+        right: 0;
         display: flex;
         justify-content: center;
-        margin-bottom: 10px;
-      }
-
-      .menu-card .drink-image img {
-        width: var(--drink-size);
+        align-items: center;
         transform: none;
       }
+      .menu-card .drink-image img {
+        width: var(--drink-size);
+        max-width: 100%;
+        height: auto;
+        transform: none;
+        display: block;
+        margin: 0 auto;
+      }
 
+      /* Блок с информацией о напитке — по центру, с адаптивными паддингами */
       .menu-card .drink-info {
         position: relative;
         width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
         left: 0;
-        bottom: 0;
+        right: 0;
+        transform: none;
+        box-sizing: border-box;
         align-items: center;
         text-align: center;
-        border-radius: 30px;
-        padding: 18px 24px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        border-radius: 22px;
+        padding: 16px 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+        background: #fdf3e7;
       }
-
       .menu-card .drink-info h3,
       .menu-card .drink-info p {
         text-align: center;
       }
 
       #menu h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+      }
+
+      /* Галерея: одна колонка, изображения на всю ширину */
+      .gallery {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        margin-top: 30px;
+      }
+      .gallery img {
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 16px;
+      }
+      .gallery img:last-child {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      /* Кнопки контактов: ширина 95%, padding 12px 20px, margin 10px auto */
+      #contact .social-link-button {
+        width: 95%;
+        max-width: 350px;
+        font-size: 15px;
+        padding: 12px 20px;
+        margin: 10px auto;
+        box-sizing: border-box;
+      }
+
+      /* Гамбургер-меню: top 80px, max-height 90vh, overflow-y auto */
+      .hamburger-menu {
+        top: 80px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      /* Отступы секций: section:not(.hero) padding 40px 20px */
+      section:not(.hero) {
+        padding: 40px 20px;
+      }
+
+      /* Заголовок hero h1 */
+      .hero h1 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      /* Кнопки контактов: ширина 90% */
+      #contact .social-link-button {
+        width: 90%;
+      }
+      /* Заголовки: #menu h2 и .hero h1 чуть меньше, margin-bottom 12px */
+      #menu h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+      }
+      .hero h1 {
+        font-size: 32px;
       }
     }
 
@@ -786,18 +873,155 @@ footer {
       }
     }
 
-    @media (min-width: 1400px) {
-      section {
-        max-width: 1400px;
-        padding: 100px 80px;
-      }
-
+    /* ====== МЕДИАЗАПРОС ТОЛЬКО ДЛЯ МОБИЛЬНЫХ (до 765px) ====== */
+    @media (max-width: 765px) {
+      /* 1. .menu-grid — flex-колонка, выравнивание по центру, gap, overflow: visible */
       .menu-grid {
-        gap: 60px 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 30px;
+        overflow: visible;
+        margin-top: 30px;
       }
 
-      #menu h2 {
-        font-size: 3.2rem;
+      /* 2. .menu-card — стабильное выравнивание, фиксированная ширина и центрирование */
+      .menu-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
+        box-sizing: border-box;
+      }
+
+      /* 3. .menu-card .drink-image — сместить напиток чуть вниз */
+      .menu-card .drink-image {
+        margin-top: 18px;
+        margin-bottom: 8px;
+      }
+
+      /* 4. .menu-card .drink-info — новая плашка, всё ровно и по центру */
+      .menu-card .drink-info {
+        position: relative;
+        width: 100%;
+        max-width: 330px;
+        margin: 0 auto 50px auto;
+        left: 0;
+        right: 0;
+        transform: none;
+        box-sizing: border-box;
+        align-items: center;
+        text-align: center;
+        border-radius: 20px;
+        padding: 16px 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+      }
+      .menu-card .drink-info h3,
+      .menu-card .drink-info p {
+        text-align: center;
+      }
+
+      /* 5. #contact — больше пространство между кнопками и плашкой, уменьшить ширину кнопок */
+      #contact .contact-links-container {
+        margin-top: 50px;
+        gap: 18px;
+      }
+      #contact .social-link-button {
+        width: 95%;
+        max-width: 320px;
+        font-size: 15px;
+        padding: 12px 0;
+        margin: 10px auto;
+      }
+
+      /* 6. header nav — скрыть по умолчанию, гамбургер показать */
+      nav {
+        display: none !important;
+      }
+      .menu-hamburger {
+        display: block !important;
+        position: absolute;
+        right: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1001;
+      }
+      .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 10px;
+        position: relative;
+      }
+      header {
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 0 0 0;
+        min-height: 0;
+      }
+      /* Стили для гамбургер-меню */
+      .hamburger-menu {
+        display: none;
+        position: fixed;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90vw;
+        max-width: 92vw;
+        min-height: 200px;
+        height: auto;
+        padding: 20px 0;
+        background: rgba(44, 30, 19, 0.85);
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .hamburger-menu a {
+        color: #fff;
+        font-size: 1.2rem;
+        margin: 6px 0;
+        padding: 6px 0;
+        text-decoration: none;
+        transition: color 0.25s;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+        display: block;
+        text-align: center;
+      }
+      .hamburger-menu a:hover {
+        color: #ffe4bc;
+        filter: brightness(1.18);
+      }
+      .hamburger-menu .close {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        font-size: 2.7rem;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+    /* Гамбургер-иконка видна до 700px */
+    @media (max-width: 700px) {
+      .menu-hamburger {
+        display: block !important;
+        position: absolute;
+        right: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1001;
+      }
+      .menu-card:hover .drink-info,
+      .menu-card:hover .drink-image {
+        box-shadow: none;
       }
     }
   </style>
@@ -814,6 +1038,19 @@ footer {
           <a href="#reviews">Отзывы</a>
           <a href="#contact">Контакты</a>
         </nav>
+        <div class="menu-hamburger" id="menuHamburger" style="display: none; cursor: pointer;">
+          <span style="display: block; width: 26px; height: 3px; margin: 5px 0; background: #fff; border-radius: 2px;"></span>
+          <span style="display: block; width: 26px; height: 3px; margin: 5px 0; background: #fff; border-radius: 2px;"></span>
+          <span style="display: block; width: 26px; height: 3px; margin: 5px 0; background: #fff; border-radius: 2px;"></span>
+        </div>
+        <div class="hamburger-menu" id="hamburgerMenu" style="display: none;">
+          <a href="#about" onclick="closeHamburgerMenu()" style="color:#fff; font-size: 2rem; margin: 18px 0; text-decoration:none;">О нас</a>
+          <a href="#menu" onclick="closeHamburgerMenu()" style="color:#fff; font-size: 2rem; margin: 18px 0; text-decoration:none;">Меню</a>
+          <a href="#gallery" onclick="closeHamburgerMenu()" style="color:#fff; font-size: 2rem; margin: 18px 0; text-decoration:none;">Интерьер</a>
+          <a href="#reviews" onclick="closeHamburgerMenu()" style="color:#fff; font-size: 2rem; margin: 18px 0; text-decoration:none;">Отзывы</a>
+          <a href="#contact" onclick="closeHamburgerMenu()" style="color:#fff; font-size: 2rem; margin: 18px 0; text-decoration:none;">Контакты</a>
+          <div onclick="closeHamburgerMenu()" style="position: absolute; top: 24px; right: 28px; font-size: 2.7rem; color: #fff; cursor: pointer;">×</div>
+        </div>
     </div>
   </header>
 
@@ -1100,5 +1337,41 @@ footer {
     window.addEventListener('load', handleReveal);
   </script>
 </body>
+  <script>
+    // Гамбургер-меню для мобилки
+    function showHamburgerElements() {
+      const menuHamburger = document.getElementById('menuHamburger');
+      const nav = document.querySelector('header nav');
+      if (window.innerWidth <= 765) {
+        if (menuHamburger) menuHamburger.style.display = 'block';
+        if (nav) nav.style.display = 'none';
+      } else {
+        if (menuHamburger) menuHamburger.style.display = 'none';
+        if (nav) nav.style.display = '';
+        // Закрыть меню, если оно было открыто
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        if (hamburgerMenu) hamburgerMenu.style.display = 'none';
+      }
+    }
+    function openHamburgerMenu() {
+      const menu = document.getElementById('hamburgerMenu');
+      if (menu) menu.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeHamburgerMenu() {
+      const menu = document.getElementById('hamburgerMenu');
+      if (menu) menu.style.display = 'none';
+      document.body.style.overflow = '';  
+    }
+    window.addEventListener('resize', showHamburgerElements);
+    window.addEventListener('DOMContentLoaded', function() {
+      showHamburgerElements();
+      const menuHamburger = document.getElementById('menuHamburger');
+      if (menuHamburger) {
+        menuHamburger.addEventListener('click', openHamburgerMenu);
+      }
+    });
+    // Глобально, чтобы onclick работал
+    window.closeHamburgerMenu = closeHamburgerMenu;
+  </script>
 </html>
-
